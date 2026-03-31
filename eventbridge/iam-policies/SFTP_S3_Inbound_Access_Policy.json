@@ -1,0 +1,35 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "AllowOnlyPDFUploads",
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject",
+                "s3:PutObjectTagging"
+            ],
+            "Resource": [
+                "arn:aws:s3:::dev-sftp-inbound-quarantine/healthworks/*/*.pdf",
+                "arn:aws:s3:::dev-sftp-inbound-quarantine/healthworks/*/*.PDF"
+            ]
+        },
+        {
+            "Sid": "AllowUserFolderListing",
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListBucket",
+                "s3:GetBucketLocation"
+            ],
+            "Resource": "arn:aws:s3:::dev-sftp-inbound-quarantine"
+        },
+        {
+            "Sid": "AllowReadAccess",
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetObject",
+                "s3:GetObjectVersion"
+            ],
+            "Resource": "arn:aws:s3:::dev-sftp-inbound-quarantine/healthworks/*"
+        }
+    ]
+}
