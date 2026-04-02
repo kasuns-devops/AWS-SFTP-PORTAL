@@ -220,8 +220,8 @@ Resources:
                   - s3:PutObject
                   - s3:PutObjectTagging
                 Resource:
-                  - !Sub "${InboundBucket.Arn}/healthworks/*/*.pdf"
-                  - !Sub "${InboundBucket.Arn}/healthworks/*/*.PDF"
+                  - !Sub "${InboundBucket.Arn}/healthworks/*/uploads/*.pdf"
+                  - !Sub "${InboundBucket.Arn}/healthworks/*/uploads/*.PDF"
               - Sid: AllowUserFolderListing
                 Effect: Allow
                 Action:
