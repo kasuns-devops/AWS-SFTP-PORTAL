@@ -1,0 +1,73 @@
+name: Dev - Deploy SFTP Malware Router
+
+on:
+  push:
+    branches:
+      - dev
+  pull_request:
+    branches:
+      - dev
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+  SAM_CLI_TELEMETRY: 0
+
+jobs:
+  # ============================================================
+  # VALIDATE — Runs on every push and PR to dev
+  # ============================================================
+  validate:
+    name: Validate Template
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup SAM CLI
+        uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: true
+
+      - name: SAM Validate
+        run: sam validate --lint
+
+      - name: SAM Build (dry run)
+        run: sam build --no-cached
+
+  # ============================================================
+  # DEPLOY DEV — Only on push to dev (not on PRs)
+  # ============================================================
+  deploy:
+    name: Deploy to Dev
+    needs: validate
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup SAM CLI
+        uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: true
+
+      - name: SAM Build
+        run: sam build
+
+      - name: SAM Deploy
+        run: |
+          sam deploy \
+            --config-env dev \
+            --no-confirm-changeset \
+            --no-fail-on-empty-changeset
