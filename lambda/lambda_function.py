@@ -9,9 +9,9 @@ logger.setLevel(logging.INFO)
 s3 = boto3.client('s3')
 sns = boto3.client('sns')
 
-CLEAN_BUCKET = 'healthworks-lambda-manage-productionencounterbucke-yoqwb36evr2x'
-INFECTED_BUCKET = 'dev-sftp-infected-quarantine'
-SNS_TOPIC_ARN = 'arn:aws:sns:us-east-1:744640651507:dev-SFTP-Malware-Detected-Alert' 
+CLEAN_BUCKET = os.environ['CLEAN_BUCKET']
+INFECTED_BUCKET = os.environ['INFECTED_BUCKET']
+SNS_TOPIC_ARN = os.environ['SNS_TOPIC_ARN']
 
 def get_unique_key(bucket, key):
     """
